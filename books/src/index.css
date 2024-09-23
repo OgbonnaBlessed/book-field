@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+body {
+  color: white;
+  background: var(--main-color);
+}
+
+button {
+  transition: all 0.5s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: grey;
+  cursor: grabbing;
+}
+
+:root {
+  --primary-color: rgba(255, 240, 31, 0.87);
+  --secondary-color: rgba(4, 122, 14, 0.699);
+  --sub-main: rgb(219, 21, 21);
+  --main-color: rgb(6, 14, 0);
+}
+
+.shop{
+  margin-top: 7rem;
+}

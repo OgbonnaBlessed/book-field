@@ -1,0 +1,10 @@
+.Footer {
+    background-color: black;
+    color: white;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    padding: 1rem 0;
+}
