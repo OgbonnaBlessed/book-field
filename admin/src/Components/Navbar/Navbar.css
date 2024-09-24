@@ -1,0 +1,16 @@
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(4, 122, 14, 0.699);
+    z-index: 10;
+    background-color: rgb(6, 14, 0);
+    color: white;
+}
+
+.admin-logo {
+    font-size: 2.5rem;
+    font-family: cursive;
+}
