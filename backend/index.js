@@ -7,6 +7,7 @@ const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const { type } = require("os");
 
 dotenv.config()
 
@@ -51,7 +52,7 @@ app.post("/upload", upload.single('product'), (req, res) => {
 // Schema for creating products
 const Product = mongoose.model("Product", {
     id:{
-        type: String,
+        type: Number,
         requred: true,
         unique: true,
     },
@@ -84,8 +85,19 @@ const Product = mongoose.model("Product", {
 // API to add all products
 
 app.post('/addproduct', async (req, res) => {
+    let products = await Product.find({});
+    let id;
+
+    if(products.length > 0) {
+        let last_product_array = products.slice(-1);
+        let last_product = last_product_array[0];
+        id = last_product.id+1;
+    } else {
+        id = 1
+    }
+
     const product = new Product({
-        id: req.body.id,
+        id: id,
         name: req.body.name,
         image: req.body.image,
         category: req.body.category,
@@ -115,7 +127,87 @@ app.get('/allproducts', async (req, res) => {
     let products = await Product.find({});
     console.log("All products fetched");
     res.send(products);
-})
+});
+
+// Schema for the user model
+const Users = mongoose.model('Users', {
+    name: {
+        type: String,
+    },
+    email: {
+        type: String,
+        unique: true,
+    },
+    password: {
+        type: String,
+    },
+    cartData:{
+        type: Object,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    }
+});
+
+app.post('/signup', async (req, res) => {
+    let checkEmail = await Users.findOne({ email: req.body.email });
+
+    if (checkEmail) {
+        return res.status(400).json({ success: false, errors: "existing user found" });
+    }
+
+    let cart = {};
+
+    for (let i = 0; i < 300; i++) {
+        cart[i] = 0;
+        
+    }
+
+    const user = new Users({
+        name: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        cartData: cart,
+    })
+
+    await user.save()
+
+    const data = {
+        user: {
+            id: user.id
+        }
+    }
+
+    const token = jwt.sign(data, 'secret_ecom');
+    res.json({ success: true, token });
+});
+
+// Creating endpoint for user login
+app.post('/login', async (req, res) => {
+    let user = await Users.findOne({ email: req.body.email });
+
+    if (user) {
+        const comparePassword = req.body.password === user.password;
+
+        if (comparePassword) {
+            const data = {
+                user: {
+                    id: user.id
+                }
+            }
+
+            const token = jwt.sign(data, 'secret_ecom');
+            res.json({ success: true, token });
+
+        } else {
+            res.json({ success: false, errors: "Wrong password"});
+        }
+
+    } else {
+        res.json({ success: false, errors: "Incorrect email address"});
+    }
+});
 
 app.listen(port, (error) => {
     if (!error) {

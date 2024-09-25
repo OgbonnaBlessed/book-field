@@ -1,6 +1,6 @@
 .side-bar {
     width: fit-content;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 1rem;
