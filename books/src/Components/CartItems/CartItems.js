@@ -33,7 +33,7 @@ const CartItems = () => {
                     <h2>{date}</h2>
                     <div className="product-info">
                         <div className="product-details">
-                            <img src={`${process.env.PUBLIC_URL}/${e.image}`} alt="" />
+                            <img src={`${e.image}`} alt="" />
                             <div className="product-further-info">
                                 <div className="name">{e.name}</div>
                                 <div className="price">${formatCurrency(e.priceCents * cartItems[e.id])}</div>

@@ -6,7 +6,8 @@ const AddProducts = () => {
     const [image, setImage] = useState(false);
     const [productDetails, setProductDetails] = useState({
         name: "",
-        priceCent: "",
+        author: "",
+        priceCents: "",
         category: "Trending",
         image: ""
     })
@@ -62,11 +63,20 @@ const AddProducts = () => {
                     />
                 </div>
                 <div className="input-container">
+                    <p>Product Author</p>
+                    <input 
+                        type="text" 
+                        name='author' 
+                        onChange={changeHandler}
+                        value={productDetails.author}
+                    />
+                </div>
+                <div className="input-container">
                     <p>Product Price</p>
                     <input 
                         type="text" 
-                        name='priceCent' 
-                        value={productDetails.priceCent}
+                        name='priceCents' 
+                        value={productDetails.priceCents}
                         onChange={changeHandler}
                     />
                 </div>

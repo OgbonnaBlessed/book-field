@@ -60,6 +60,10 @@ const Product = mongoose.model("Product", {
         type: String,
         required: true,
     },
+    author:{
+        type: String,
+        required: true,
+    },
     image: {
         type: String,
         required: true,
@@ -68,7 +72,7 @@ const Product = mongoose.model("Product", {
         type: String,
         reqiured: true,
     },
-    priceCent:{
+    priceCents:{
         type: Number,
         required: true,
     },
@@ -96,16 +100,36 @@ app.post('/addproduct', async (req, res) => {
         id = 1
     }
 
+    // if (products.length > 0) {
+
+    //     function Str_Random(length) {
+    //         id = '';
+    //         const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            
+    //         // Loop to generate characters for the specified length
+    //         for (let i = 0; i < length; i++) {
+    //             const randomInd = Math.floor(Math.random() * characters.length);
+    //             id += characters.charAt(randomInd);
+    //         }
+    //         return id;
+    //     }
+
+    //     Str_Random(20);
+    // } else {
+    //     id = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
+    // }
+    
+
     const product = new Product({
         id: id,
         name: req.body.name,
+        author: req.body.author,
         image: req.body.image,
         category: req.body.category,
-        priceCent: req.body.priceCent,
+        priceCents: req.body.priceCents,
     });
-    console.log(product);
+
     await product.save();
-    console.log("saved");
     res.json({
         success: true,
         name: req.body.name,
@@ -115,7 +139,7 @@ app.post('/addproduct', async (req, res) => {
 // API to remove product
 app.post('/removeproduct', async (req, res) => {
     await Product.findOneAndDelete({ id: req.body.id });
-    console.log("Removed");
+
     res.json({
         success: true,
         name: req.body.name,
@@ -125,7 +149,6 @@ app.post('/removeproduct', async (req, res) => {
 // API to get all products
 app.get('/allproducts', async (req, res) => {
     let products = await Product.find({});
-    console.log("All products fetched");
     res.send(products);
 });
 
@@ -208,6 +231,73 @@ app.post('/login', async (req, res) => {
         res.json({ success: false, errors: "Incorrect email address"});
     }
 });
+
+// Create endpoint for newcollection data
+app.get('/newcollection', async (req, res) => {
+    let products = await Product.find({});
+    let newcollection = products.slice(1).slice(-8);
+
+    res.send(newcollection);
+})
+
+// Create endpoint for popular data
+app.get('/popular', async (req, res) => {
+    let products = await Product.find({ category: "Trending" });
+    let popular = products.slice(0, 4);
+
+    res.send(popular);
+});
+
+// Create middleware to fetch user
+const fetchUser = async (req, res, next) => {
+    const token = req.header('auth-token');
+
+    if (!token) {
+        res.status(401).send({ errors: "Please authenticate using valid"})
+    } else {
+        try {
+            const data = jwt.verify(token, 'secret_ecom');
+            req.user = data.user;
+            next();
+
+        } catch (error) {
+            res.status(401).send({ errors: "Please authenticate"})
+        }
+    }
+}
+
+// Creating endpoint for adding products in cartdata
+app.post('/addtocart', fetchUser, async (req, res) => {
+    // console.log("Added", req.body.itemId);
+
+    let userData = await Users.findOne({ _id:req.user.id});
+    userData.cartData[req.body.itemId] += 1;
+    await Users.findByIdAndUpdate({_id:req.user.id}, {cartData:userData.cartData});
+    res.send("Added");
+});
+
+// Creating endpoint for adding products in cartdata
+app.post('/removefromcart', fetchUser, async (req, res) => {
+    // console.log("removed", req.body.itemId);
+
+    let userData = await Users.findOne({ _id:req.user.id});
+
+    if (userData.cartData[req.body.itemId] > 0) {
+        userData.cartData[req.body.itemId] -= 1;
+    }
+
+    await Users.findByIdAndUpdate({_id:req.user.id}, {cartData:userData.cartData});
+    res.send("Removed");
+});
+
+// Creating endpoint to fetch cart data
+app.post('/getcartitems', fetchUser, async (req, res) => {
+    // console.log("Get Cart");
+
+    let userData = await Users.findOne({ _id: req.user.id });
+    res.json(userData.cartData);
+
+})
 
 app.listen(port, (error) => {
     if (!error) {

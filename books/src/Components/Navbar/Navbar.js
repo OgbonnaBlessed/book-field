@@ -1,12 +1,18 @@
 import React, { useContext } from 'react'
 import './Navbar.css'
 import { FaHeart } from 'react-icons/fa'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { MdOutlineShoppingCart } from 'react-icons/md'
 import { BookContext } from '../../Context/BookContext'
 
 const Navbar = () => {
   const { getTotalCartItems } = useContext(BookContext);
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    localStorage.removeItem('auth-token')
+    navigate('/');
+  }
 
   return (
     <>
@@ -30,7 +36,14 @@ const Navbar = () => {
             <FaHeart size={40} color='rgb(219, 21, 21)' />
             <span>0</span>
         </div>
-        <Link to="/login"><button>Login</button></Link>
+        {localStorage.getItem('auth-token')
+        ? <Link>
+              <button
+                onClick={logOut}
+              >Log out</button>
+          </Link>
+        : <Link to="/signup"><button>Sign up</button></Link>
+        }
       </div>
     </div>
     </>

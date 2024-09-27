@@ -8,7 +8,7 @@ const Item = (props) => {
   return (
     <Link to={`/product/${props.id}`}>
     <div className='item' onClick={window.scrollTo(0, 0)}>
-      <img src={`${process.env.PUBLIC_URL}/${props.image}`} alt="" />
+      <img src={`${props.image}`} alt="" />
       <p className='name'>{props.name} by <i>{props.author}</i></p>
       <div className='price-box'>
         <p className="price">${formatCurrency(props.priceCents)}</p>

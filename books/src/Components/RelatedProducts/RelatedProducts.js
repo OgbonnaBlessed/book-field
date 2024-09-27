@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './RelatedProducts.css'
-import { product } from '../../Data/Data';
+// import { useParams } from 'react-router-dom';
+// import { product } from '../../Data/Data';
+import { BookContext } from '../../Context/BookContext';
 import Item from '../Item/Item';
 
 const RelatedProducts = () => {
+  const { product } = useContext(BookContext);
     
   return (
     <div className='related-products'>

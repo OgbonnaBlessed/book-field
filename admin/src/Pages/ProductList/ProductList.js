@@ -42,6 +42,7 @@ const ProductList = () => {
                 <thead>
                     <tr>
                         <th>Product name</th>
+                        <th>Product author</th>
                         <th>Product price</th>
                         <th>Product category</th>
                         <th>Product image</th>
@@ -52,7 +53,8 @@ const ProductList = () => {
                     <tbody key={i}>
                         <tr>
                             <td>{product.name}</td>
-                            <td>{product.priceCent}</td>
+                            <td>{product.author}</td>
+                            <td>{product.priceCents}</td>
                             <td>{product.category}</td>
                             <td>
                                 <img src={product.image} alt="" />
